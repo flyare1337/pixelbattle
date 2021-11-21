@@ -1,4 +1,4 @@
-const hostname = "http://localhost:9000";
+const hostname = "https://pixels-api.boticord.top";
 const processedErrors = (type, args) => {
     let types = {
         "IncorrectColor": "Указан некорректный код цвета.",

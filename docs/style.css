@@ -18,6 +18,7 @@ td {
   width: 9px;
   height: 9px;
   background-color: #fff;
+  border: 0.1px solid #F1F1F1;
 }
 
 .choisediv {
