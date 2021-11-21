@@ -37,7 +37,7 @@ module.exports = (r) => ({
             if (err) throw err;
             if (!pixel) return res.send({ error: true, reason: "IncorrectPixel" });
 
-            r.db('pixelbattle').table('users').get(req.body.token).update({ cooldown: Date.now() + 10000 })
+            r.db('pixelbattle').table('users').get(req.body.token).update({ cooldown: Date.now() + 1500 })
                 .run(r.connection, async (err) => {
                     if (err) throw err;
                     r.db('pixelbattle').table('pixels').get(req.body.id)
