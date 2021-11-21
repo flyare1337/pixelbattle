@@ -20,6 +20,9 @@ td {
   background-color: #fff;
   border: 0.1px solid #F1F1F1;
 }
+.pix:hover {
+  background-color: #F1F1F1;
+}
 
 .choisediv {
   width: 10px;
