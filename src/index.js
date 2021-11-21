@@ -11,7 +11,7 @@ r.connect(config.database, (err, conn) => {
 const fastify = require('fastify');
 const app = fastify({ logger: false });
 
-app.register(require('fastify-cors'));
+app.register(require('fastify-cors'), { origin: "https://pixels.boticord.top });
 app.register(require('fastify-formbody'));
 app.register(require('fastify-rate-limit'), {
     keyGenerator: (req) => req.headers['cf-connecting-ip'] || req.ip,
