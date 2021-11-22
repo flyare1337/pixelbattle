@@ -1,5 +1,6 @@
 const AREA_WIDTH = 80;
 const AREA_HEIGHT = 50;
+const hostname = "https://pixels-api.boticord.top";
 
 const table = document.getElementById('pbarea');
 
@@ -26,7 +27,6 @@ for (let i = 0; i < AREA_HEIGHT; i++) {
     }
 }
 
-const hostname = "http://localhost:3000";
 const processedErrors = (type, args) => {
     let types = {
         "IncorrectColor": "Указан некорректный код цвета.",
