@@ -1,3 +1,5 @@
+const rethinkdb = require('rethinkdb');
+
 module.exports = (r) => ({
     method: "POST",
     url: '/getInfo',
@@ -16,10 +18,8 @@ module.exports = (r) => ({
             timeWindow: '1s'
         }
     },
-    handler(req, res) {
-        r.db('pixelbattle').table('users').get(req.body.token).run(r.connection, async (err, user) => {
-            if (err) throw err;
-            return res.send(user);
-        });
+    async handler(req, res) {
+        const user = await rethinkdb.db('pixelbattle').table('users').get(req.body.token).run(r); // ??
+        return res.send(user);
     }
 });

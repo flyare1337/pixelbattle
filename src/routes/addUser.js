@@ -1,12 +1,5 @@
 const { token } = require('../config.json');
-function processCursor(cursor) {
-    return new Promise((resolve, reject) =>
-        cursor.toArray((err, data) => {
-            if (err) return reject(err);
-            return resolve(data);
-        })
-    );
-}
+const rethinkdb = require('rethinkdb');
 
 module.exports = (r) => ({
     method: "POST",
@@ -21,19 +14,23 @@ module.exports = (r) => ({
             }
         }
     },
-    handler(req, res) {
+    async handler(req, res) {
         if (req.body.token !== token) return res.send({ error: true, reason: "IncorrectToken" });
-        r.db('pixelbattle').table('users').filter({ userID: req.body.userID })
-            .run(r.connection, async (err, users) => {
-                if (err) throw err;
-                users = await processCursor(users);
-                if (users[0]) return res.send(users[0]);
 
-                r.db('pixelbattle').table('users').insert([{ userID: req.body.userID, cooldown: 0 }])
-                    .run(r.connection, async (err, result) => {
-                        if (err) throw err;
-                        return res.send({ token: result.generated_keys[0], userID: req.body.userID, cooldown: 0 });
-                    });
-            });
+        const [user] = await (await rethinkdb
+            .db('pixelbattle')
+            .table('users')
+            .filter({ userID: req.body.userID })
+            .run(r)).toArray();
+
+        if (user) return res.send(user);
+
+        const result = await rethinkdb
+            .db('pixelbattle')
+            .table('users')
+            .insert([{ userID: req.body.userID, cooldown: 0 }])
+            .run(r);
+
+        return res.send({ token: result.generated_keys[0], userID: req.body.userID, cooldown: 0 });
     }
 });

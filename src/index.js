@@ -1,36 +1,41 @@
 const config = require('./config.json');
 const fs = require('fs');
-
-const r = require('rethinkdb');
-r.connect(config.database, (err, conn) => {
-    if (err) throw err;
-    r.connection = conn;
-    console.info('* [Main] Connected to database');
-});
-
+const rethinkdb = require('rethinkdb');
 const fastify = require('fastify');
-const app = fastify({ logger: false });
+const path = require("path");
+const EventEmitter = require("events");
 
-app.register(require('fastify-cors'), { origin: "https://pixels.boticord.top" });
-app.register(require('fastify-formbody'));
-app.register(require('fastify-rate-limit'), {
-    keyGenerator: (req) => req.headers['cf-connecting-ip'] || req.ip,
-    global: true
-});
+(async () => {
+    const db = await rethinkdb.connect(config.database);
+    console.info('* [Main] Connected to database');
 
-for (const file of fs.readdirSync('./routes').filter(
-    file => file.endsWith('.js') && !file.endsWith('.disabled.js')
-)) {
-    const route = require(`./routes/${file}`)(r);
-    console.log(`* Loading route [${route.method}] ${route.url}`);
-    app.route(route);
-}
+    const app = fastify();
 
-app.listen(config.port, '0.0.0.0', (err, address) => {
-    if (err) {
-        app.log.error(err);
-        process.exit(1);
+    app
+        .register(require('fastify-cors'), { origin: 'https://pixels.boticord.top' })
+        .register(require('fastify-formbody'))
+        .register(require('fastify-rate-limit'), {
+            keyGenerator: (req) => req.headers['cf-connectiong-ip'] || req.ip,
+            global: true
+        })
+        .register(require('fastify-sse'));
+
+    const pixelsEvents = new EventEmitter();
+
+    for (const file of fs.readdirSync(path.join(__dirname, "routes")).filter(
+        file => file.endsWith('.js')
+    )) {
+        const route = require(`./routes/${file}`)(db, pixelsEvents);
+        console.log(`* Loading route [${route.method}] ${route.url}`);
+        app.route(route);
     }
-
-    console.log(`* [Main] Server is now listening on ${address}`);
-});
+    
+    app.listen(config.port, (err, address) => {
+        if (err) {
+            app.log.error(err);
+            process.exit(1);
+        }
+    
+        console.log(`* [Main] Server is now listening on ${address}`);
+    });
+})();
