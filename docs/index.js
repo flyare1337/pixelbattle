@@ -7,7 +7,6 @@ const table = document.getElementById('pbarea');
 let index = 0;
 
 function updatePixel(id, color) {
-    console.log(id, color)
     const pixelEl = document.getElementById(`p_${id + 1}`);
     pixelEl.style = `background-color: ${color};`;
 }
@@ -106,10 +105,12 @@ eventSource.onmessage = (e) => {
     }
 }
 
-fetch(`${hostname}/pixels/get`)
-    .then(x => x.json())
-    .then(({ pixels }) => {
-        for (const pixel of pixels) {
-            updatePixel(pixel.id, pixel.color);
-        }
-    });
+eventSource.onopen = () => {
+    fetch(`${hostname}/pixels/get`)
+        .then(x => x.json())
+        .then(({ pixels }) => {
+            for (const pixel of pixels) {
+                updatePixel(pixel.id, pixel.color);
+            }
+        });
+}
