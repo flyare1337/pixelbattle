@@ -18,7 +18,7 @@ const EventEmitter = require("events");
             keyGenerator: (req) => req.headers['cf-connectiong-ip'] || req.ip,
             global: true
         })
-        .register(require('fastify-sse'));
+        .register(require('fastify-sse-v2').FastifySSEPlugin);
 
     const pixelsEvents = new EventEmitter();
 
