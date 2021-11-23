@@ -46,7 +46,7 @@ if (userToken) {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ token: userToken })
     }).then(res => res.json()).then(x => {
-        if (x.error) return alert(processedErrors(x.reason));
+        if (x.error && x.reason) return alert(processedErrors(x.reason));
         document.getElementById('user-id').innerText = x.userID;
         document.getElementById('user-tag-input').value = x.tag;
     }).catch(() => {});
@@ -109,7 +109,7 @@ document.getElementById('user-tag-submit').onclick = (e) => {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ tag: tag.value, token: userToken })
     }).then(res => res.json()).then(x => {
-        if (x.error) return alert(processedErrors(x.reason));
+        if (x.error && x.reason) return alert(processedErrors(x.reason));
         alert('Тэг изменён!');
     }).catch(() => {});
 }
@@ -184,7 +184,7 @@ function changeColor(color) {
                 token: userToken
             })
         }).catch(() => {}).then(x => x.json()).catch(() => {}).then(x => {
-            if (x.error) return alert(processedErrors(x.reason, [x.cooldown || 0]));
+            if (x.error && x.reason) return alert(processedErrors(x.reason, [x.cooldown || 0]));
         })
     })
 });
