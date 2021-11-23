@@ -18,14 +18,12 @@ const EventEmitter = require("events");
             keyGenerator: (req) => req.headers['cf-connectiong-ip'] || req.ip,
             global: true
         })
-        .register(require('fastify-sse-v2').FastifySSEPlugin);
-
-    const pixelsEvents = new EventEmitter();
+        .register(require('fastify-websocket'));
 
     for (const file of fs.readdirSync(path.join(__dirname, "routes")).filter(
         file => file.endsWith('.js')
     )) {
-        const route = require(`./routes/${file}`)(db, pixelsEvents);
+        const route = require(`./routes/${file}`)(db);
         console.log(`* Loading route [${route.method}] ${route.url}`);
         app.route(route);
     }

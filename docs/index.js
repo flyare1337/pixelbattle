@@ -5,6 +5,7 @@ const hostname = "https://pixels-api.boticord.top";
 const table = document.getElementById('pbarea');
 
 let index = 0;
+let connected = false;
 
 function updatePixel(id, color) {
     const pixelEl = document.getElementById(`p_${id + 1}`);
@@ -176,7 +177,7 @@ function changeColor(color) {
 
         if (!userToken) return alert('Вы не авторизованы!');
 
-        fetch(`${hostname}/pixels/put`, {
+        if (connected) fetch(`${hostname}/pixels/put`, {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
@@ -190,26 +191,47 @@ function changeColor(color) {
     })
 });
 
-const eventSource = new EventSource(`${hostname}/pixels/sse`, { withCredentials: true });
-eventSource.onmessage = (e) => {
-    const data = JSON.parse(e.data);
-    switch (data.op) {
-        case 'PLACE':
-            updatePixel(data.id, data.color);
-            break;
-    
-        case 'ENDED':
-            document.getElementById('pixel-ended').style = '';
-            break;
+const socketURL = new URL(hostname);
+socketURL.protocol = 'wss';
+socketURL.pathname = '/pixels/socket';
+
+function connectSocket() {
+    const ws = new WebSocket(socketURL);
+
+    ws.onopen = () => {
+        fetch(`${hostname}/pixels/get`)
+            .then(x => x.json())
+            .then(({ pixels }) => {
+                for (const pixel of pixels) {
+                    updatePixel(pixel.id, pixel.color);
+                }
+                connected = true;
+            });
+    };
+    ws.onmessage = async (e) => {
+        let data;
+        if (e.data instanceof Blob) {
+            const reader = new FileReader();
+            reader.readAsText(e.data);
+            data = await new Promise((r) => {
+                reader.onload = () => r(JSON.parse(reader.result));
+            });
+        } else {
+            data = JSON.parse(e.data);
+        }
+        switch (data.op) {
+            case 'PLACE':
+                updatePixel(data.id, data.color);
+                break;
+        
+            case 'ENDED':
+                document.getElementById('pixel-ended').style = '';
+                break;
+        }
     }
+
+    ws.onclose = () => { connected = false; setTimeout(() => connectSocket(), 2000); }
+    ws.onerror = () => ws.close();
 }
 
-eventSource.onopen = () => {
-    fetch(`${hostname}/pixels/get`)
-        .then(x => x.json())
-        .then(({ pixels }) => {
-            for (const pixel of pixels) {
-                updatePixel(pixel.id, pixel.color);
-            }
-        });
-}
+connectSocket();
