@@ -66,7 +66,7 @@ module.exports = (r) => ({
             .db('pixelbattle')
             .table('users')
             .get(req.body.token)
-            .update({ cooldown: Date.now() + cooldownTime })
+            .update({ cooldown })
             .run(r);
 
         await rethinkdb
