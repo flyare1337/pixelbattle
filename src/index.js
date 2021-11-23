@@ -15,7 +15,7 @@ const EventEmitter = require("events");
         .register(require('fastify-cors'), { origin: '*' })
         .register(require('fastify-formbody'))
         .register(require('fastify-rate-limit'), {
-            keyGenerator: (req) => req.headers['cf-connectiong-ip'] || req.ip,
+            keyGenerator: (req) => req.headers['cf-connecting-ip'] || req.ip,
             global: true
         })
         .register(require('fastify-websocket'));
