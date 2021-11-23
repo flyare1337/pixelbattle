@@ -62,10 +62,10 @@ function updateTags() {
 
             let newTags = [];
             for (const tag of data.tags) {
-                newTags.push(`<li><b>${tag[0]}</b>: ${tag[1]}</li>`);
+                newTags.push(`${tag[0]}: ${tag[1]}\n`);
             }
 
-            tags.innerHTML = newTags.join("");
+            tags.innerText = newTags.join("");
         });
 }
 
