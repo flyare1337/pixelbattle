@@ -29,6 +29,11 @@ button#pixel-menu-toggle {
   background-color: #fff;
 }
 
+.pix:hover {
+  transform: scale(1.2);
+  outline: gray solid 1px;
+}
+
 .choisediv {
   width: 10px;
   height: 10px;
