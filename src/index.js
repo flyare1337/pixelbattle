@@ -12,7 +12,7 @@ const EventEmitter = require("events");
     const app = fastify();
 
     app
-        .register(require('fastify-cors'), { origin: 'https://pixels.boticord.top' })
+        .register(require('fastify-cors'), { origin: '*' })
         .register(require('fastify-formbody'))
         .register(require('fastify-rate-limit'), {
             keyGenerator: (req) => req.headers['cf-connectiong-ip'] || req.ip,
