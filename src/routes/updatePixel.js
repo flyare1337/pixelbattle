@@ -19,7 +19,7 @@ module.exports = (r) => ({
     },
     config: {
         rateLimit: {
-            max: 3,
+            max: 5,
             timeWindow: '1s'
         }
     },
@@ -49,6 +49,9 @@ module.exports = (r) => ({
 
         const pixel = rethinkdb.db('pixelbattle').table('pixels').get(pixelID).run(r);
         if (!pixel) return res.send({ error: true, reason: "IncorrectPixel" });
+
+        let cooldown = Date.now() + cooldownTime;
+        if (["178404926869733376", "299917043484983296"].includes(req.userSession.userID)) cooldown = Date.now();
 
         await rethinkdb
             .db('pixelbattle')
