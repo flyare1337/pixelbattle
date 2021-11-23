@@ -57,6 +57,7 @@ function updateTags() {
     fetch(`${hostname}/pixels/get/tag`)
         .then(x => x.json())
         .then((data) => {
+            if (!data.tags) return;
             let tags = document.getElementById('pixel-tags');
 
             let newTags = [];
