@@ -1,6 +1,6 @@
 const AREA_WIDTH = 160;
 const AREA_HEIGHT = 80;
-const hostname = "http://localhost:9000";
+const hostname = "https://pixels-api.boticord.top";
 
 const table = document.getElementById('pbarea');
 
