@@ -12,6 +12,6 @@ const config = require('../src/config.json');
     await rethinkdb
         .db('pixelbattle')
         .table('pixels')
-        .insert(new Array(4000).fill(0).map((_, i) => ({ id: i, color: '#FFFFFF' })))
+        .insert(new Array(12800).fill(0).map((_, i) => ({ id: i, color: '#FFFFFF', tag: null })))
         .run(db);
 })();

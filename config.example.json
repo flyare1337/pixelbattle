@@ -1,0 +1,13 @@
+{
+    "port": 9000,
+    "cooldownTime": 30000,
+    "ended": false,
+    "token": "***",
+    "database": {
+        "host": "***",
+        "port": 28015,
+        "user": "pixelbattle",
+        "password": "***",
+        "db": "pixelbattle"
+    }
+}

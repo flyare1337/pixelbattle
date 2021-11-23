@@ -1,5 +1,4 @@
-const { ended } = require('../config.json');
-const cdTime = 0;
+const { ended, cooldownTime } = require('../config.json');
 const rethinkdb = require('rethinkdb');
 
 const hexRegExp = /^#[0-9A-F]{6}$/i;
@@ -39,6 +38,7 @@ module.exports = (r, ee) => ({
             cooldown: Math.round((user.cooldown - Date.now()) / 1000)
         });
 
+        req.userSession = user;
         done();
     },
     async handler(req, res) {
@@ -54,14 +54,14 @@ module.exports = (r, ee) => ({
             .db('pixelbattle')
             .table('users')
             .get(req.body.token)
-            .update({ cooldown: Date.now() + cdTime })
+            .update({ cooldown: Date.now() + cooldownTime })
             .run(r);
 
         await rethinkdb
             .db('pixelbattle')
             .table('pixels')
             .get(pixelID)
-            .update({ color })
+            .update({ color, tag: req.userSession.tag })
             .run(r);
 
         ee.emit('place', { op: 'PLACE', id: pixelID, color });

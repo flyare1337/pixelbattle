@@ -2,7 +2,7 @@ const rethinkdb = require('rethinkdb');
 
 module.exports = (r) => ({
     method: "POST",
-    url: '/getInfo',
+    url: '/user/getInfo',
     schema: {
         body: {
             type: 'object',
@@ -19,7 +19,8 @@ module.exports = (r) => ({
         }
     },
     async handler(req, res) {
-        const user = await rethinkdb.db('pixelbattle').table('users').get(req.body.token).run(r); // ??
+        const user = await rethinkdb.db('pixelbattle').table('users').get(req.body.token).run(r);
+        if (!user) return res.send({ error: true, reason: "NotAuthorized" });
         return res.send(user);
     }
 });

@@ -14,14 +14,19 @@ td {
   padding: 0px;
 }
 
+button#pixel-menu-toggle {
+  padding: 10px;
+  width: 100%;
+}
+
+.row {
+  columns: 2;
+}
+
 .pix {
   width: 9px;
   height: 9px;
   background-color: #fff;
-  /* border: 0.1px solid #F1F1F1;*/
-}
-.pix:hover {
-  background-color: #F1F1F1;
 }
 
 .choisediv {

@@ -28,9 +28,9 @@ module.exports = (r) => ({
         const result = await rethinkdb
             .db('pixelbattle')
             .table('users')
-            .insert([{ userID: req.body.userID, cooldown: 0 }])
+            .insert([{ userID: req.body.userID, cooldown: 0, tag: null }])
             .run(r);
 
-        return res.send({ token: result.generated_keys[0], userID: req.body.userID, cooldown: 0 });
+        return res.send({ token: result.generated_keys[0], userID: req.body.userID, cooldown: 0, tag: null });
     }
 });

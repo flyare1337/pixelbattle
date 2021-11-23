@@ -1,6 +1,6 @@
-const AREA_WIDTH = 80;
-const AREA_HEIGHT = 50;
-const hostname = "https://pixels-api.boticord.top";
+const AREA_WIDTH = 160;
+const AREA_HEIGHT = 80;
+const hostname = "http://localhost:9000";
 
 const table = document.getElementById('pbarea');
 
@@ -41,14 +41,106 @@ const processedErrors = (type, args) => {
 let userToken = localStorage.getItem('user-token');
 document.getElementById(`user-form-${userToken ? 'profile' : 'login'}`).style = '';
 if (userToken) {
-    fetch(`${hostname}/getInfo`, {
+    fetch(`${hostname}/user/getInfo`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ token: userToken })
     }).then(res => res.json()).then(x => {
         if (x.error) return alert(processedErrors(x.reason));
         document.getElementById('user-id').innerText = x.userID;
+        document.getElementById('user-tag-input').value = x.tag;
     }).catch(() => {});
+}
+
+function updateTags() {
+    fetch(`${hostname}/pixels/get/tag`)
+        .then(x => x.json())
+        .then((data) => {
+            let tags = document.getElementById('pixel-tags');
+
+            let newTags = [];
+            for (const tag of data.tags) {
+                newTags.push(`<li><b>${tag[0]}</b>: ${tag[1]}</li>`);
+            }
+
+            tags.innerHTML = newTags.join("");
+        });
+}
+
+updateTags();
+setInterval(() => { updateTags(); }, 30000);
+
+let pixelMenuToggle = false;
+document.getElementById('pixel-menu-toggle').onclick = (e) => {
+    e.preventDefault();
+    let menu = document.getElementById('pixel-menu');
+    switch (pixelMenuToggle) {
+        case true:
+            menu.style = 'display: none;';
+            pixelMenuToggle = false;
+            break;
+    
+        case false:
+            menu.style = '';
+            pixelMenuToggle = true;
+            break;
+    }
+}
+
+let colors = document.getElementById('user-colors');
+let userColors = localStorage.getItem('user-colors');
+if (userColors) {
+    userColors = JSON.parse(userColors);
+
+    let newColors = [];
+    for (let x of userColors) {
+        newColors.push(`<div id="${x}" class="ColorPalette__color" onclick="changeColor('${x}')" style="background-color: ${x};"></div>`);
+    }
+
+    colors.innerHTML += newColors.join("");
+}
+
+document.getElementById('user-tag-submit').onclick = (e) => {
+    e.preventDefault();
+    let tag = document.getElementById('user-tag-input');
+
+    fetch(`${hostname}/user/changeTag`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tag: tag.value, token: userToken })
+    }).then(res => res.json()).then(x => {
+        if (x.error) return alert(processedErrors(x.reason));
+        alert('Тэг изменён!');
+    }).catch(() => {});
+}
+
+const hexRegExp = /^#[0-9A-F]{6}$/i;
+document.getElementById('user-color-change').onclick = (e) => {
+    e.preventDefault();
+    let color = document.getElementById('user-color-input');
+    if (!color || !color.value || !hexRegExp.test(color.value)) return alert('Где код цвета?');
+
+    let userColors = localStorage.getItem('user-colors');
+    if (!userColors) localStorage.setItem('user-colors', JSON.stringify([color.value]));
+    else {
+        userColors = JSON.parse(userColors);
+        if (!userColors.find(x => x == color.value)) userColors.push(color.value);
+        localStorage.setItem('user-colors', JSON.stringify(userColors));
+    }
+
+    changeColor(color.value);
+}
+
+document.getElementById('user-color-reset').onclick = (e) => {
+    e.preventDefault();
+    let answer = confirm("Хочешь сбросить все цвета? Ты уверен в этом?");
+    if (answer) {
+        let userColors = localStorage.getItem('user-colors');
+        if (userColors) localStorage.removeItem('user-colors');
+        else return alert('У тебя же нет цветов, дурашка!');
+
+        window.location.reload();
+    }
 }
 
 document.getElementById('user-login').onclick = (e) => {
@@ -100,8 +192,14 @@ function changeColor(color) {
 const eventSource = new EventSource(`${hostname}/pixels/sse`);
 eventSource.onmessage = (e) => {
     const data = JSON.parse(e.data);
-    if (data.op === 'PLACE') {
-        updatePixel(data.id, data.color);
+    switch (data.op) {
+        case 'PLACE':
+            updatePixel(data.id, data.color);
+            break;
+    
+        case 'ENDED':
+            document.getElementById('pixel-ended').style = '';
+            break;
     }
 }
 
