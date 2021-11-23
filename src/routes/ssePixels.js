@@ -1,3 +1,4 @@
+const { ended } = require('../config.json');
 const { on } = require('events');
 
 module.exports = (r, ee) => ({
@@ -13,6 +14,7 @@ module.exports = (r, ee) => ({
     handler(req, res) {
         res.sse(
             (async function* () {
+                if (ended) yield { data: JSON.stringify({ op: 'ENDED', value: true }) }
                 for await (const [data] of on(ee, 'place')) {
                     yield { data: JSON.stringify(data) };
                 }
