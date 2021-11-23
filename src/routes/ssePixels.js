@@ -1,5 +1,5 @@
 const { ended } = require('../config.json');
-const { PassThrough } = require('stream');
+const { on } = require('events');
 
 module.exports = (r, ee) => ({
     method: "GET",
@@ -12,11 +12,13 @@ module.exports = (r, ee) => ({
         }
     },
     handler(req, res) {
-        const read = new PassThrough({ objectMode: true });
-        res.sse(read);
-
-        read.write({ op: 'HELLO' });
-        if (ended) read.write({ op: 'ENDED', value: true });
-        ee.on('place', data => read.write(data));
+        res.sse(
+            (async function* () {
+                if (ended) yield { data: JSON.stringify({ op: 'ENDED', value: true }) }
+                for await (const [data] of on(ee, 'place')) {
+                    yield { data: JSON.stringify(data) };
+                }
+            })()
+        );
     }
 });
