@@ -3,7 +3,7 @@ const rethinkdb = require('rethinkdb');
 
 const hexRegExp = /^#[0-9A-F]{6}$/i;
 
-module.exports = (r, ee) => ({
+module.exports = (r) => ({
     method: "POST",
     url: '/pixels/put',
     schema: {
@@ -64,7 +64,15 @@ module.exports = (r, ee) => ({
             .update({ color, tag: req.userSession.tag })
             .run(r);
 
-        ee.emit('place', { op: 'PLACE', id: pixelID, color });
+        req.server.websocketServer.clients.forEach((client) =>
+            client.readyState === 1 &&
+                client.send(JSON.stringify({
+                        op: 'PLACE',
+                        id: pixelID,
+                        color
+                    })
+                )
+        );
 
         return res.send({ error: false, reason: "Ok" });
     }

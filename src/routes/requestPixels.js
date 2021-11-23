@@ -1,6 +1,6 @@
 const rethinkdb = require('rethinkdb');
 
-module.exports = (r, ee) => ({
+module.exports = (r) => ({
     method: "GET",
     url: '/pixels/get',
     schema: {},
@@ -10,7 +10,7 @@ module.exports = (r, ee) => ({
             timeWindow: '1s'
         }
     },
-    async handler(req, res) {
+    async handler(_, res) {
         const pixels = await (await rethinkdb
             .db('pixelbattle')
             .table('pixels')
