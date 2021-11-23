@@ -189,7 +189,7 @@ function changeColor(color) {
     })
 });
 
-const eventSource = new EventSource(`${hostname}/pixels/sse`, { withCredentials: true });
+const eventSource = new EventSource(`${hostname}/pixels/sse`);
 eventSource.onmessage = (e) => {
     const data = JSON.parse(e.data);
     switch (data.op) {
