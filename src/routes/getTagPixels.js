@@ -6,8 +6,8 @@ module.exports = (r) => ({
     schema: {},
     config: {
         rateLimit: {
-            max: 1,
-            timeWindow: '10s'
+            max: 2,
+            timeWindow: '5s'
         }
     },
     async handler(req, res) {
