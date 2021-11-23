@@ -56,6 +56,7 @@ function updateTags() {
     fetch(`${hostname}/pixels/get/tag`)
         .then(x => x.json())
         .then((data) => {
+            if (!data.tags) return;
             let tags = document.getElementById('pixel-tags');
 
             let newTags = [];
@@ -189,7 +190,7 @@ function changeColor(color) {
     })
 });
 
-const eventSource = new EventSource(`${hostname}/pixels/sse`);
+const eventSource = new EventSource(`${hostname}/pixels/sse`, { withCredentials: true });
 eventSource.onmessage = (e) => {
     const data = JSON.parse(e.data);
     switch (data.op) {
