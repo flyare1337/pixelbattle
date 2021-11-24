@@ -62,10 +62,10 @@ function updateTags() {
 
             let newTags = [];
             for (const tag of data.tags) {
-                newTags.push(`${tag[0]}: ${tag[1]}\n`);
+                newTags.push(`<li><b>${tag[0]}</b>: ${tag[1]}</li>`);
             }
 
-            tags.innerText = newTags.join("");
+            tags.innerHTML = newTags.join("");
         });
 }
 
@@ -80,11 +80,13 @@ document.getElementById('pixel-menu-toggle').onclick = (e) => {
         case true:
             menu.style = 'display: none;';
             pixelMenuToggle = false;
+            document.getElementById("pixel-menu-toggle").innerHTML="Открыть меню";
             break;
     
         case false:
             menu.style = '';
             pixelMenuToggle = true;
+            document.getElementById("pixel-menu-toggle").innerHTML="Закрыть меню";
             break;
     }
 }
