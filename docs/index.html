@@ -7,10 +7,12 @@
   </head>
   <body>
     <div id="root">
-      <button type="button" id="pixel-menu-toggle">Показать меню</button>
+      <div class="pixel-menu-button">
+        <button type="button" id="pixel-menu-toggle">Открыть меню</button>
+      </div>
       <div class="LeftPanel" id="pixel-menu" style="display: none;">
         <div class="ColorPalette">
-          <div class="DesktopHeader">Пиксели</div>
+          <b class="DesktopHeader">Пиксели</b>
           <div class="row">
             <div class="col">
               <div class="ColorPalette__list" id="user-colors">
@@ -99,14 +101,14 @@
           <br><br><button type="button" id="user-login">Авторизоваться</button>
         </div>
         <div class="ColorPalette" id="user-form-profile" style="display: none;">
-          <div class="DesktopHeader">Профиль</div>
-          <p>Вы вошли как <b id="user-id"></b></p>
+          <b class="DesktopHeader">Профиль</b>
+          <p>Вы вошли как <i id="user-id"></i></p>
           <hr><input type="text" id="user-tag-input" placeholder="Сюда вставляй тэг" maxlength="8">
           <br><br><button type="button" id="user-tag-submit">Сменить тэг команды</button>
           <br><br><button type="button" id="user-logout">Выйти из аккаунта</button>
         </div>
         <div class="ColorPalette">
-          <div class="DesktopHeader">Где я?</div>
+          <b class="DesktopHeader">Где я?</b>
           <p>
             Привет! Ты попал на <a href="https://boticord.top/" target="_blank">BotiCord.top</a> Pixel Battle!
             <br>Если коротко - здесь нужно ставить пиксели и рисовать картинки.
@@ -115,7 +117,7 @@
           </p>
         </div>
         <div class="ColorPalette">
-          <div class="DesktopHeader">Самые активные теги</div>
+          <b class="DesktopHeader">Самые активные теги</b>
           <ul id="pixel-tags"></ul>
         </div>
       </div>

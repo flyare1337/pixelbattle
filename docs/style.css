@@ -1,22 +1,56 @@
 body {
-  background-color: #bcbcbc;
+  background-color: #fff;
   color: #000;
   margin-left: 25%;
 }
 
+/* input {
+  border: 0;
+  outline: 0;
+  padding: 8px;
+  font-size: 14px;
+  background-color: rgb(30, 40, 41);
+  color: #dcdcdc;
+  border-radius: 10px;
+} */
+
 .paper {
   border-spacing: 0px;
-  border-collapse: collapse;
-  border: 1px solid rgb(91, 84, 128);
+
 }
 
 td {
   padding: 0px;
 }
+.LeftPanel {
+  border-left: 1px dashed rgb(255, 0, 0);
+}
+
+.pixel-menu-button {
+  background-color: #fff;
+  border: 0;
+}
 
 button#pixel-menu-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  margin: 0 auto;
   padding: 10px;
-  width: 100%;
+  display: block;
+  z-index: 1000;
+  background-color: rgb(30, 40, 41);
+  border: 0;
+  border-radius: 20px;
+  color: rgb(255, 85, 85);
+  font-size: 17px;
+  box-shadow: 0 0 10px black;
+  transition: .3s;
+  cursor: pointer;
+}
+
+button#pixel-menu-toggle:hover {
+  transform: translateY(-2px);
 }
 
 .row {
@@ -27,11 +61,6 @@ button#pixel-menu-toggle {
   width: 9px;
   height: 9px;
   background-color: #fff;
-}
-
-.pix:hover {
-  transform: scale(1.2);
-  outline: gray solid 1px;
 }
 
 .choisediv {
@@ -7745,13 +7774,8 @@ a:focus {
 .DatePicker__input__hs0tag {
   cursor: pointer !important;
 }
-@charset "UTF-8";
-@font-face {
-  font-family: Pixel;
-  font-style: normal;
-  font-weight: 300;
-  /* src: url(../../static/media/3572.1dac22c2.ttf) format('truetype'); */
-}
+
+
 body {
   background: #fff;
   font-size: 15px;
@@ -9313,6 +9337,7 @@ body.body_blocked_scroll {
   height: 32px;
   margin: 0 5px 5px 0;
   position: relative;
+  border-radius: 100%;
 }
 .ColorPalette__color.no-right {
   margin-right: 0;
@@ -10187,3 +10212,15 @@ body {
   line-height: 18px;
   color: #e64646;
 }
+
+#user-color {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+
